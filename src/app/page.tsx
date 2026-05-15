@@ -17,12 +17,20 @@ export default  function Home() {
       toast.success("Job queued");
     }
   }));
+  const textAi = useMutation(trpc.testAi.mutationOptions({
+    onSuccess:()=>{
+      toast.success("Ai Job queued");
+    }
+  }))
   return (
     <div className="text-red-500 min-h-screen min-w-screen flex items-center justify-center flex-col gap-y-6">
       Protected Route
       <div>
         {JSON.stringify(data)}
       </div>
+      <Button onClick={()=>textAi.mutate()} disabled={textAi.isPending}>
+        Test Ai
+      </Button>
       <Button onClick={()=>create.mutate()} disabled={create.isPending}>
         Create workflow
       </Button>
