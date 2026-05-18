@@ -38,7 +38,7 @@ export function useEntitySearch<T extends {
             }
         }, debounceMs);
         return ()=> clearTimeout(timer);
-    },[localSearch , params,setParams,debounceMs])
+    },[localSearch , params.page, params.search,setParams,debounceMs])
     useEffect(()=>{
         setLocalSearch(params.search)
     },[params.search]);
