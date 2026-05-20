@@ -13,4 +13,7 @@ export const workFlowsParams = {
     search:parseAsString
         .withDefault("")
         .withOptions({clearOnDefault:true}),
+    workflowId : parseAsString 
+        .withDefault("")
+        .withOptions({clearOnDefault:true})
 }
