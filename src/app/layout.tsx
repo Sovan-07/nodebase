@@ -4,6 +4,7 @@ import "./globals.css";
 import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,12 +27,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <TRPCReactProvider>
-          <NuqsAdapter>
-            {children}
-            <Toaster />
-          </NuqsAdapter>
-        </TRPCReactProvider>
+        <TooltipProvider>
+          <TRPCReactProvider>
+            <NuqsAdapter>
+              {children}
+              <Toaster />
+            </NuqsAdapter>
+          </TRPCReactProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

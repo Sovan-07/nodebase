@@ -11,8 +11,12 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useSuspenseWorkflow, useUpdateWorkflowName } from "@/features/workflows/hooks/use-workflows";
+import {
+  useSuspenseWorkflow,
+  useUpdateWorkflowName,
+} from "@/features/workflows/hooks/use-workflows";
 import { useEffect, useRef, useState } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
   return (
@@ -25,96 +29,100 @@ export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
   );
 };
 
-export const EditorNameInput = ({workflowId}:{workflowId:string})=>{
-    const {data:workflow} = useSuspenseWorkflow(workflowId);
-    const updateWorkflow = useUpdateWorkflowName();
-    const [isEditing , setIsEditing] = useState(false);
-    const [name , setName] = useState(workflow.name);
+export const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
+  const { data: workflow } = useSuspenseWorkflow(workflowId);
+  const updateWorkflow = useUpdateWorkflowName();
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(workflow.name);
 
-    const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    useEffect(()=>{
-        if(workflow.name) {
-            setName(workflow.name)
-        }
-    },[workflow.name])
+  useEffect(() => {
+    if (workflow.name) {
+      setName(workflow.name);
+    }
+  }, [workflow.name]);
 
-    useEffect(()=>{
-        if(isEditing && inputRef.current) {
-            inputRef.current.focus();
-            inputRef.current.select();
-        }
-    },[isEditing])
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
 
-    const handleSave = async()=>{
-        if(name===workflow.name) {
-            setIsEditing(false);
-            return;
-        }
-        
-
-        try {
-            // setIsEditing(true);
-            await updateWorkflow.mutateAsync({
-                id:workflowId,
-                name,
-            });
-        }
-        catch{
-            setName(workflow.name);
-        }
-        finally {
-            setIsEditing(false);
-        }
+  const handleSave = async () => {
+    if (name === workflow.name) {
+      setIsEditing(false);
+      return;
     }
 
-    const handleKeyDown = (e:React.KeyboardEvent)=>{
-        if(e.key==="Enter") {
-            handleSave();
-        } else if (e.key === "Escape") {
-            setName(workflow.name);
-            setIsEditing(false)
-        }
+    try {
+      // setIsEditing(true);
+      await updateWorkflow.mutateAsync({
+        id: workflowId,
+        name,
+      });
+    } catch {
+      setName(workflow.name);
+    } finally {
+      setIsEditing(false);
     }
+  };
 
-    if(isEditing) {
-        return (
-            <Input
-                ref={inputRef}
-                value={name}
-                onChange={(e)=> setName(e.target.value)}
-                onBlur={handleSave}
-                onKeyDown={handleKeyDown}
-                className="h-7 w-auto min-w-[100px] px-2"
-                disabled={updateWorkflow.isPending}
-            />
-        )
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSave();
+    } else if (e.key === "Escape") {
+      setName(workflow.name);
+      setIsEditing(false);
     }
+  };
 
-
-
+  if (isEditing) {
     return (
-        <BreadcrumbItem onClick={()=>setIsEditing(true)} className="cursor-pointer hover:text-foreground transition-colors">
-            {workflow.name}
-        </BreadcrumbItem>
-    )
+      <Input
+        ref={inputRef}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        onBlur={handleSave}
+        onKeyDown={handleKeyDown}
+        className="h-7 w-auto min-w-[100px] px-2"
+        disabled={updateWorkflow.isPending}
+      />
+    );
+  }
 
- }
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <BreadcrumbItem
+          onClick={() => setIsEditing(true)}
+          className="cursor-pointer hover:text-foreground transition-colors"
+        >
+          {workflow.name}
+        </BreadcrumbItem>
+      </TooltipTrigger>
+      <TooltipContent side="right">
+        <p>Edit Name</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+};
 
 export const EditorBreadcrumbs = ({ workflowId }: { workflowId: string }) => {
   return (
     <Breadcrumb>
-        <BreadcrumbList>
-            <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                    <Link prefetch href="/workflows">
-                        Workflows
-                    </Link>
-                </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator/>
-            <EditorNameInput workflowId={workflowId}/>
-        </BreadcrumbList>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link prefetch href="/workflows">
+              Workflows
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <EditorNameInput workflowId={workflowId} />
+      </BreadcrumbList>
     </Breadcrumb>
   );
 };
