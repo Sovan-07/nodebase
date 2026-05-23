@@ -5,6 +5,7 @@ import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Provider } from "jotai";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -30,8 +31,10 @@ export default function RootLayout({
         <TooltipProvider>
           <TRPCReactProvider>
             <NuqsAdapter>
-              {children}
-              <Toaster />
+              <Provider>
+                {children}
+                <Toaster />
+              </Provider>
             </NuqsAdapter>
           </TRPCReactProvider>
         </TooltipProvider>

@@ -1,16 +1,15 @@
 "use client"
 
 import { memo, useState } from "react"
-import { Button } from "./ui/button"
+import { Button } from "@/components/ui/button"
 import { PlusIcon } from "lucide-react"
-import { NodeSelector } from "./node-selector";
+import { NodeSelector } from "@/components/node-selector";
 
 export const AddNodeButton = memo(()=>{
     const [selectorOpen , setSelectorOpen] = useState(false);
     return (
         <NodeSelector open={selectorOpen} onOpenChange={setSelectorOpen}>
             <Button 
-                onClick={()=>{}}
                 size="icon"
                 variant="outline"
                 className="bg-background"
