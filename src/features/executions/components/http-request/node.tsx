@@ -20,6 +20,8 @@ export const HttpRequestNode = memo((props:NodeProps<HttpRequestNodeType>)=>{
         ?`${nodeData.method || "GET"} : ${nodeData.endpoint}`
         :"Not Configured";
     
+    const nodeStatus = "success";
+    
     return (
         <>
             <BaseExecutionNode
@@ -28,6 +30,7 @@ export const HttpRequestNode = memo((props:NodeProps<HttpRequestNodeType>)=>{
                 icon={GlobeIcon}
                 name="HTTP Request"
                 description={description}
+                status={nodeStatus}
                 onSettings={()=>{}}
                 onDoubleClick={()=>{}}
             />
