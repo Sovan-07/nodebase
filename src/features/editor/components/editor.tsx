@@ -64,9 +64,9 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
             nodeTypes={nodeComponents}
             fitView
             onInit={setEditor}
-            // proOptions={{
-            //     hideAttribution:true,
-            // }} //hides the ReactFlow text from bottom
+            proOptions={{
+                hideAttribution:true,
+            }} 
             snapGrid={[10,10]}
             snapToGrid
             panOnScroll

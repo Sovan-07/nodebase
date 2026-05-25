@@ -1,9 +1,10 @@
 "use client"
 
-import { Node, NodeProps } from "@xyflow/react";
+import { Node, NodeProps, useReactFlow } from "@xyflow/react";
 import { BaseExecutionNode } from "../base-execution-node";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { GlobeIcon } from "lucide-react";
+import { type FormType, HttpRequestDialog } from "./dialog";
 
 type HttpRequestNodeData = {
     endpoint?:string;
@@ -21,19 +22,47 @@ export const HttpRequestNode = memo((props:NodeProps<HttpRequestNodeType>)=>{
         :"Not Configured";
     
     const nodeStatus = "success";
+    const [dialogOpen , setDialogOpen] = useState(false);
+    const handleOpenSettings = ()=>setDialogOpen(true);
+    const {setNodes} = useReactFlow();
+    const handleSubmit = (values:FormType)=>{
+        setNodes((nodes)=>nodes.map((node)=>{
+            if(node.id===props.id) {
+                return {
+                    ...node,
+                    data:{
+                        ...node.data,
+                        endpoint:values.endpoint,
+                        method:values.method,
+                        body:values.body,
+                    }
+                }
+            }
+            return node;
+        }))
+    }
     
     return (
         <>
-            <BaseExecutionNode
-                {...props}
-                id={props.id}
-                icon={GlobeIcon}
-                name="HTTP Request"
-                description={description}
-                status={nodeStatus}
-                onSettings={()=>{}}
-                onDoubleClick={()=>{}}
+            <HttpRequestDialog 
+                open={dialogOpen} 
+                onOpenChange={setDialogOpen}
+                onSubmit={handleSubmit}
+                defaultEndpoint={nodeData.endpoint}
+                defaultMethod={nodeData.method}
+                defaultBody={nodeData.body}
+
             />
+                <BaseExecutionNode
+                    {...props}
+                    id={props.id}
+                    icon={GlobeIcon}
+                    name="HTTP Request"
+                    description={description}
+                    status={nodeStatus}
+                    onSettings={handleOpenSettings}
+                    onDoubleClick={handleOpenSettings}
+                />
         </>
     )
 })
