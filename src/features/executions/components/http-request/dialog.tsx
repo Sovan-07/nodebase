@@ -37,42 +37,38 @@ const formSchema = z.object({
   body: z.string().optional(),
   // .refine() TODO
 });
-export type FormType = z.infer<typeof formSchema>;
+export type HttpRequestFormValues = z.infer<typeof formSchema>;
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
-  defaultEndpoint?: string;
-  defaultMethod?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  defaultBody?: string;
+  defaultValues?: Partial<HttpRequestFormValues>;
 }
 
 export const HttpRequestDialog = ({
   open,
   onOpenChange,
   onSubmit,
-  defaultEndpoint = "",
-  defaultMethod = "GET",
-  defaultBody = "",
+  defaultValues = {},
 }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      endpoint: defaultEndpoint,
-      method: defaultMethod,
-      body: defaultBody,
+      endpoint: defaultValues.endpoint || "",
+      method: defaultValues.method || "GET",
+      body: defaultValues.body || "",
     },
   });
   //Reset for values when dialog opens with new default
-  useEffect(()=>{
-    if(open) {
-        form.reset({
-            endpoint:defaultEndpoint,
-            method:defaultMethod,
-            body:defaultBody
-        })
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        endpoint: defaultValues.endpoint || "",
+        method: defaultValues.method || "GET",
+        body: defaultValues.body || "",
+      });
     }
-  },[open , defaultEndpoint , defaultMethod , defaultBody, form,])
+  }, [open, defaultValues, form]);
   const watchMetchod = form.watch("method");
   const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMetchod);
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
@@ -156,14 +152,15 @@ export const HttpRequestDialog = ({
                     <FormControl>
                       <Textarea
                         placeholder={
-                            '{\n "userId":"{{httpResponse.data.id}}",\n "name":"{{httpResponse.data.name}}",\n "items":"{{httpResponse.data.items}}",\n}'
+                          '{\n "userId":"{{httpResponse.data.id}}",\n "name":"{{httpResponse.data.name}}",\n "items":"{{httpResponse.data.items}}",\n}'
                         }
                         className="min-h-[120px] font-mono text-sm"
                         {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      JSON with template variables. Use {"{{variables}}"} for sample values or 
+                      JSON with template variables. Use {"{{variables}}"} for
+                      sample values or
                       {"{{json variable}}"} to stringify objects
                     </FormDescription>
                     <FormDescription>
@@ -175,7 +172,7 @@ export const HttpRequestDialog = ({
               />
             )}
             <DialogFooter className="mt-4">
-                <Button type="submit" >Save</Button>
+              <Button type="submit">Save</Button>
             </DialogFooter>
           </form>
         </Form>
