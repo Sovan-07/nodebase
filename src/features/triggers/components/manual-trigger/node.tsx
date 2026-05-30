@@ -8,7 +8,7 @@ import { ManualTriggerDialog } from "./dialog";
 export const ManualTriggerNode = memo((props:NodeProps)=>{
     const [dialogOpen , setDialogOpen] = useState(false);
     const handleOpenSettings = ()=> setDialogOpen(true)
-    const nodeStatus = "loading";
+    const nodeStatus = "initial";
     return (
         <>
             <ManualTriggerDialog open={dialogOpen} onOpenChange={setDialogOpen}/>
