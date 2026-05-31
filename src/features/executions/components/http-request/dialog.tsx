@@ -94,7 +94,7 @@ export const HttpRequestDialog = ({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form
+          <form 
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-8 mt-4"
           >

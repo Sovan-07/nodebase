@@ -1,11 +1,18 @@
+import Handlebars from "handlebars"
 import type { NodeExecutor } from "@/features/executions/types";
 import { NonRetriableError } from "inngest";
 import ky, {Options as KyOptions} from "ky"
 
+Handlebars.registerHelper("json" , (context)=> {
+    const stringified = JSON.stringify(context,null,2);
+    const safeString = new Handlebars.SafeString(stringified);
+    return safeString;
+});
+
 type HttpRequestData = {
-    variableName?:string;
-    endpoint?: string;
-    method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+    variableName:string;
+    endpoint: string;
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     body?: string;
 }
 
@@ -16,18 +23,25 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({ data,
         throw new NonRetriableError("HTTP Request Node : No endpoint configured");
     }
 
-     if (!data.variableName) {
+    if (!data.variableName) {
         //TODO : Publish "error" state for http req
-        throw new NonRetriableError("Variable name not configured");
+        throw new NonRetriableError("HTTP Request Node : Variable name not configured");
+    }
+
+    if (!data.method) {
+        //TODO : Publish "error" state for http req
+        throw new NonRetriableError("HTTP Request Node : method not configured");
     }
 
     
     const result = await step.run("http-request" , async ()=>{
-        const endpoint = data.endpoint!;
-        const method = data.method || "GET";
+        const endpoint = Handlebars.compile(data.endpoint)(context);
+        const method = data.method;
         const options :KyOptions = {method};
         if(["POST" , "PUT" , "PATCH"].includes(method)) {
-            options.body = data.body; 
+            const resolved = Handlebars.compile(data.body||"{}")(context);
+            JSON.parse(resolved);
+            options.body = resolved; 
             options.headers = {
                 "Content-Type" : "application/json",
             } 
@@ -44,20 +58,17 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({ data,
                 data:responseData,
             }
         };
-        if(data.variableName) {
-            return {
-                ...context,
-                [data.variableName]:responsePayload,
-            }
-        }
+        
         return {
-            ...context ,
-            ...responsePayload,
+            ...context,
+            [data.variableName]:responsePayload,
         }
+        
+       
     });
 
     //TODO : Publish "success" state foe http node
 
-    return {result};
+    return result;
 
 }
