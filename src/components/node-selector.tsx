@@ -30,6 +30,13 @@ const triggerNodes:NodeTypeOption[] = [
         description:"Runs the flow on clicking a button. Good for getting started quickly",
         icon:MousePointer2Icon,
     },
+
+    {
+        type:NodeType.GOOGLE_FORM_TRIGGER,
+        label:"Google Form",
+        description:"Runs the flow when a google form is submitted",
+        icon:"/logos/googleform.svg",
+    },
 ];
 
 const executionNodes:NodeTypeOption[] = [
@@ -38,7 +45,7 @@ const executionNodes:NodeTypeOption[] = [
         label:"HTTP Request",
         description:"Makes an HTTP request",
         icon:GlobeIcon,
-    }
+    },
 ]
 
 interface NodeSelectorProps {
