@@ -9,12 +9,14 @@
     "lint": "biome check",
     "format": "biome format --write",
     "inngest:dev": "inngest-cli dev",
-    "ngrok:dev" : "ngrok http --url=reformist-quiver-jeep.ngrok-free.dev 3000"
+    "ngrok:dev": "ngrok http --url=reformist-quiver-jeep.ngrok-free.dev 3000"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.77",
+    "@ai-sdk/deepseek": "^2.0.38",
     "@ai-sdk/google": "^3.0.73",
     "@ai-sdk/openai": "^3.0.63",
+    "@ai-sdk/xai": "^3.0.93",
     "@base-ui/react": "^1.4.1",
     "@hookform/resolvers": "^5.2.2",
     "@inngest/realtime": "^0.4.4",

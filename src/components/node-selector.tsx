@@ -53,7 +53,39 @@ const executionNodes:NodeTypeOption[] = [
         description:"Makes an HTTP request",
         icon:GlobeIcon,
     },
+
+    {
+        type:NodeType.GEMINI,
+        label:"Gemini",
+        description:"Use google Gemini",
+        icon:"/logos/gemini.svg",
+    },
+    {
+        type:NodeType.OPENAI,
+        label:"OpenAI",
+        description:"Use OpenAI",
+        icon:"/logos/openai.svg",
+    },
+    {
+        type:NodeType.ANTHROPIC,
+        label:"Anthropic",
+        description:"Use Anthropic",
+        icon:"/logos/anthropic.svg",
+    },
+    {
+        type:NodeType.GROK,
+        label:"Grok",
+        description:"Use Grok",
+        icon:"/logos/grok.svg",
+    },
+     {
+        type:NodeType.DEEPSEEK,
+        label:"DeepSeek",
+        description:"Use DeepSeek",
+        icon:"/logos/deepseek.svg",
+    },
 ]
+
 
 interface NodeSelectorProps {
     open:boolean;
