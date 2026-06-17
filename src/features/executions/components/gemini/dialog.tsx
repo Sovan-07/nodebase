@@ -19,8 +19,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useCredentialsByType } from "@/features/credentials/hooks/use-credentials";
+import { CredentialType } from "@/generated/prisma/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -33,6 +37,7 @@ const formSchema = z.object({
       message:
         "Variable name must start with a letter or underscore and container only letters , numbersand underscores",
     }),
+  credentialId: z.string().min(1, "Credential is required"),
   systemPrompt: z.string().optional(),
   userPrompt: z.string().min(1, "User prompt is required"),
 });
@@ -50,11 +55,16 @@ export const GeminiDialog = ({
   onSubmit,
   defaultValues = {},
 }: Props) => {
+  const {
+    data:credentials,
+    isLoading:isLoadingCredentials
+  } = useCredentialsByType(CredentialType.GEMINI)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       variableName: defaultValues.variableName || "",
       systemPrompt: defaultValues.systemPrompt || "",
+      credentialId: defaultValues.credentialId || "",
       userPrompt: defaultValues.userPrompt || "",
     },
   });
@@ -64,6 +74,7 @@ export const GeminiDialog = ({
       form.reset({
         variableName: defaultValues.variableName || "",
         systemPrompt: defaultValues.systemPrompt || "",
+        credentialId: defaultValues.credentialId || "",
         userPrompt: defaultValues.userPrompt || "",
       });
     }
@@ -104,48 +115,90 @@ export const GeminiDialog = ({
                 </FormItem>
               )}
             />
-              <FormField
+            <FormField
                 control={form.control}
-                name="systemPrompt"
+                name="credentialId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>System Prompt <span className="text-muted-foreground">(Optional)</span></FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="You are a helpful assistant."
-                        className="min-h-[80px] font-mono text-sm"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Sets the behaviour of the assistant. Use {"{{variables}}"} for simple values or {"{{json variable}}"}
-                      to stringify objects
-                    </FormDescription>
+                    <FormLabel>Gemini Credential</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isLoadingCredentials || !credentials?.length}
+
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder= "Select a credential" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {credentials?.map((option) => (
+                          <SelectItem key={option.id} value={option.id}>
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src="/logos/gemini.svg"
+                                alt="Gemini"
+                                width={16}
+                                height={16}
+                              />
+                              {option.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-               <FormField
-                control={form.control}
-                name="userPrompt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>User Prompt</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Summerize this text: {{json httpResponse.data}}"
-                        className="min-h-[80px] font-mono text-sm"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      The prompt to send to the AI. Use {"{{variables}}"} for simple values or 
-                      {"{{json variable}}"} to stringify objects
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="systemPrompt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    System Prompt{" "}
+                    <span className="text-muted-foreground">(Optional)</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="You are a helpful assistant."
+                      className="min-h-[80px] font-mono text-sm"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Sets the behaviour of the assistant. Use {"{{variables}}"}{" "}
+                    for simple values or {"{{json variable}}"}
+                    to stringify objects
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="userPrompt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>User Prompt</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Summerize this text: {{json httpResponse.data}}"
+                      className="min-h-[80px] font-mono text-sm"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    The prompt to send to the AI. Use {"{{variables}}"} for
+                    simple values or
+                    {"{{json variable}}"} to stringify objects
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <DialogFooter className="mt-4">
               <Button type="submit">Save</Button>
             </DialogFooter>

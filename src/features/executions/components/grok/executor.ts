@@ -4,6 +4,7 @@ import { NonRetriableError } from "inngest";
 import { generateText } from "ai"
 import { createXai } from "@ai-sdk/xai"
 import { grokChannel } from "@/inngest/channels/grok-node";
+import prisma from "@/lib/db";
 
 Handlebars.registerHelper("json", (context) => {
     const stringified = JSON.stringify(context, null, 2);
@@ -14,6 +15,7 @@ Handlebars.registerHelper("json", (context) => {
 type GrokData = {
     variableName?: string;
     systemPrompt?: string;
+    credentialId?:string,
     userPrompt?: string;
 }
 
@@ -44,6 +46,15 @@ export const grokExecutor: NodeExecutor<GrokData> = async ({ data, nodeId, conte
         )
         throw new NonRetriableError("Grok node: user prompt is missing")
     }
+     if (!data.credentialId) {
+        await publish(
+            grokChannel().status({
+                nodeId,
+                status: "error",
+            })
+        )
+        throw new NonRetriableError("Grok node: Credential is missing")
+    }
 
     const systemPrompt = data.systemPrompt
         ? Handlebars.compile(data.systemPrompt)(context)
@@ -51,20 +62,19 @@ export const grokExecutor: NodeExecutor<GrokData> = async ({ data, nodeId, conte
 
     const userPrompt = Handlebars.compile(data.userPrompt)(context);
 
-    const credentialValue = process.env.XAI_API_KEY!;
-
-    if(!credentialValue) {
-        await publish(
-            grokChannel().status({
-                nodeId,
-                status: "error",
+    const credential= await step.run("get-credential" , ()=> {
+            return prisma.credential.findUnique({
+                where: {
+                    id:data.credentialId
+                }
             })
-        )
-        throw new NonRetriableError("Grok node: API Key is missing/invalid")
-    }
+        });
+        if(!credential) {
+            throw new NonRetriableError("Grok node: Credential not found");
+        }
 
     const grok = createXai({
-            apiKey: credentialValue,
+            apiKey: credential.value,
     })
 
     try {
