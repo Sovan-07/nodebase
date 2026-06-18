@@ -10,6 +10,7 @@ import { ANTHROPIC_CHANNEL } from "@/inngest/channels/amthropic-node";
 
 type AnthropicNodeData = {
     variableName?:string;
+    credentialId?:string;
     systemPrompt?:string;
     userPrompt?:string;
 };

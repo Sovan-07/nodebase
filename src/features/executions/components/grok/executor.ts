@@ -19,7 +19,7 @@ type GrokData = {
     userPrompt?: string;
 }
 
-export const grokExecutor: NodeExecutor<GrokData> = async ({ data, nodeId, context, step, publish }) => {
+export const grokExecutor: NodeExecutor<GrokData> = async ({ data, nodeId, userId, context, step, publish }) => {
     await publish(
         grokChannel().status({
             nodeId,
@@ -65,7 +65,8 @@ export const grokExecutor: NodeExecutor<GrokData> = async ({ data, nodeId, conte
     const credential= await step.run("get-credential" , ()=> {
             return prisma.credential.findUnique({
                 where: {
-                    id:data.credentialId
+                    id:data.credentialId,
+                    userId
                 }
             })
         });

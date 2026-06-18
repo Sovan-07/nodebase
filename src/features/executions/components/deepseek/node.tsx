@@ -12,6 +12,7 @@ import { DEEPSEEK_CHANNEL } from "@/inngest/channels/deepseek-node";
 
 type DeepseekNodeData = {
     variableName?:string;
+    credentialId?:string;
     systemPrompt?:string;
     userPrompt?:string;
 };

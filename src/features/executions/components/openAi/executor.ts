@@ -19,7 +19,7 @@ type OpenAiData = {
     userPrompt?: string;
 }
 
-export const openAiExecutor: NodeExecutor<OpenAiData> = async ({ data, nodeId, context, step, publish }) => {
+export const openAiExecutor: NodeExecutor<OpenAiData> = async ({ data, nodeId, context, userId, step, publish }) => {
     await publish(
         openAiChannel().status({
             nodeId,
@@ -66,7 +66,8 @@ export const openAiExecutor: NodeExecutor<OpenAiData> = async ({ data, nodeId, c
     const credential= await step.run("get-credential" , ()=> {
         return prisma.credential.findUnique({
             where: {
-                id:data.credentialId
+                id:data.credentialId,
+                userId
             }
         })
     });

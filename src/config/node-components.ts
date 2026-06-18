@@ -1,6 +1,8 @@
 import { InitialNode } from "@/components/initial-node";
 import { AnthropicNode } from "@/features/executions/components/anthropic/node";
 import { DeepseekNode } from "@/features/executions/components/deepseek/node";
+import { DiscordNode } from "@/features/executions/components/discord/node";
+import { SlackNode } from "@/features/executions/components/slack/node";
 import { GeminiNode } from "@/features/executions/components/gemini/node";
 import { GrokNode } from "@/features/executions/components/grok/node";
 import { HttpRequestNode } from "@/features/executions/components/http-request/node";
@@ -22,6 +24,8 @@ export const nodeComponents = {
     [NodeType.ANTHROPIC]:AnthropicNode,
     [NodeType.GROK]:GrokNode,
     [NodeType.DEEPSEEK]:DeepseekNode,
+    [NodeType.DISCORD]:DiscordNode,
+    [NodeType.SLACK]:SlackNode,
 } as const satisfies NodeTypes;
 
 export type RegisteredNodeType = keyof typeof nodeComponents;

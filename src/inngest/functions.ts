@@ -13,6 +13,8 @@ import { openAiChannel } from "./channels/openAi-node";
 import { anthropicChannel } from "./channels/amthropic-node";
 import { grokChannel } from "./channels/grok-node";
 import { deepseekChannel } from "./channels/deepseek-node";
+import { discordChannel } from "./channels/discord-node";
+import { slackChannel } from "./channels/slack-node";
 
 export const executeWorkflow = inngest.createFunction(
   { id: "execute-workflow",}, {
@@ -27,6 +29,8 @@ export const executeWorkflow = inngest.createFunction(
       anthropicChannel(),
       grokChannel(),
       deepseekChannel(),
+      discordChannel(),
+      slackChannel(),
     ]} ,
   async ({ event , step , publish }) => {
     const workflowId = event.data.workflowId;
@@ -44,12 +48,24 @@ export const executeWorkflow = inngest.createFunction(
       });
       return topologicalSort( workflow.nodes , workflow.connections)
     });
+
+    const userId = await step.run("finde-user-id" , async() => {
+      const workflow = await prisma.workflow.findUniqueOrThrow({
+        where:{id:workflowId},
+        select:{
+          userId:true,
+        }
+        
+      });
+      return workflow.userId
+    })
     let context = event.data.initialData || {};
     for(const node of sortedNodes) {
       const executor = getExecutor(node.type as NodeType);
       context = await executor({
         data:node.data as Record<string , unknown>,
         nodeId:node.id,
+        userId,
         context,
         step,
         publish,

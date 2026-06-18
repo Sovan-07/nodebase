@@ -84,6 +84,20 @@ const executionNodes:NodeTypeOption[] = [
         description:"Use DeepSeek",
         icon:"/logos/deepseek.svg",
     },
+
+    {
+        type:NodeType.DISCORD,
+        label:"Discord",
+        description:"Use Discord",
+        icon:"/logos/discord.svg",
+    },
+
+    {
+        type:NodeType.SLACK,
+        label:"Slack",
+        description:"Use Slack",
+        icon:"/logos/slack.svg",
+    },
 ]
 
 

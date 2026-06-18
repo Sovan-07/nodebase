@@ -121,6 +121,8 @@ enum NodeType {
   OPENAI
   GROK
   DEEPSEEK
+  DISCORD
+  SLACK
 }
 model Node {
   id        String   @id @default(cuid())

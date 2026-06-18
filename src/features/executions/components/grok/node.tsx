@@ -11,6 +11,7 @@ import { GROK_CHANNEL } from "@/inngest/channels/grok-node";
 
 type GrokNodeData = {
     variableName?:string;
+    credentialId?:string;
     systemPrompt?:string;
     userPrompt?:string;
 };

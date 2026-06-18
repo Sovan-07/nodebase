@@ -9,6 +9,8 @@ import { openAiExecutor } from "../components/openAi/executor";
 import { anthropicExecutor } from "../components/anthropic/executor";
 import { grokExecutor } from "../components/grok/executor";
 import { deepseekExecutor } from "../components/deepseek/executor";
+import { discordExecutor } from "../components/discord/executor";
+import { slackExecutor } from "../components/slack/executor";
 
 export const executorRegistry : Record<NodeType , NodeExecutor> = {
     [NodeType.MANUAL_TRIGGER] : manualTriggerExecutor,
@@ -21,6 +23,8 @@ export const executorRegistry : Record<NodeType , NodeExecutor> = {
     [NodeType.OPENAI]:openAiExecutor,
     [NodeType.GROK]:grokExecutor,
     [NodeType.DEEPSEEK]:deepseekExecutor,
+    [NodeType.DISCORD]:discordExecutor,
+    [NodeType.SLACK]:slackExecutor,
 
 };
 

@@ -3,36 +3,36 @@
 import { Node, NodeProps, useReactFlow } from "@xyflow/react";
 import { BaseExecutionNode } from "../base-execution-node";
 import { memo, useState } from "react";
-import { type OpenAiFormValues, OpenAiDialog } from "./dialog";
+import { type DiscordFormValues, DiscordDialog, } from "./dialog";
 import { useNodeStatus } from "../../hooks/use-node-status";
-import { fetchOpenAiRealtimeToken } from "./action";
-import { OPENAI_CHANNEL } from "@/inngest/channels/openAi-node";
+import { fetchDiscordRealtimeToken } from "./action";
+import { GEMINI_CHANNEL } from "@/inngest/channels/gemini-node";
+import { DISCORD_CHANNEL } from "@/inngest/channels/discord-node";
 
-type OpenAiNodeData = {
-    variableName?:string;
-    credentialId?:string;
-    systemPrompt?:string;
-    userPrompt?:string;
+type DiscordNodeData = {
+    webhookUrl?: string;
+    content?: string;
+    username?: string;
 };
 
-type OpenAiNodeType = Node<OpenAiNodeData>;
+type DiscordNodeType = Node<DiscordNodeData>;
 
-export const OpenAiNode = memo((props:NodeProps<OpenAiNodeType>)=>{
+export const DiscordNode = memo((props:NodeProps<DiscordNodeType>)=>{
     const nodeData = props.data;
-    const description = nodeData?.userPrompt
-        ?`gpt-4.1: ${nodeData.userPrompt.slice(0,50)}...`
+    const description = nodeData?.content
+        ?`Send: ${nodeData.content.slice(0,50)}...`
         :"Not Configured";
     
     const nodeStatus = useNodeStatus({
         nodeId:props.id,
-        channel:OPENAI_CHANNEL,
+        channel:DISCORD_CHANNEL,
         topic : "status",
-        refreshToken:fetchOpenAiRealtimeToken
+        refreshToken:fetchDiscordRealtimeToken
     });
     const [dialogOpen , setDialogOpen] = useState(false);
     const handleOpenSettings = ()=>setDialogOpen(true);
     const {setNodes} = useReactFlow();
-    const handleSubmit = (values:OpenAiFormValues)=>{
+    const handleSubmit = (values:DiscordFormValues)=>{
         setNodes((nodes)=>nodes.map((node)=>{
             if(node.id===props.id) {
                 return {
@@ -49,7 +49,7 @@ export const OpenAiNode = memo((props:NodeProps<OpenAiNodeType>)=>{
     
     return (
         <>
-            <OpenAiDialog
+            <DiscordDialog
                 open={dialogOpen} 
                 onOpenChange={setDialogOpen}
                 onSubmit={handleSubmit}
@@ -58,8 +58,8 @@ export const OpenAiNode = memo((props:NodeProps<OpenAiNodeType>)=>{
                 <BaseExecutionNode
                     {...props}
                     id={props.id}
-                    icon="/logos/openai.svg"
-                    name="OpenAI"
+                    icon="/logos/discord.svg"
+                    name="Discord"
                     description={description}
                     status={nodeStatus}
                     onSettings={handleOpenSettings}
@@ -68,4 +68,4 @@ export const OpenAiNode = memo((props:NodeProps<OpenAiNodeType>)=>{
         </>
     )
 })
-OpenAiNode.displayName="OpenAiNode";
+DiscordNode.displayName="DiscordNode";

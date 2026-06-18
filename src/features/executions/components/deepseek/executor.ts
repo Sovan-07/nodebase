@@ -20,7 +20,7 @@ type DeepseekData = {
     userPrompt?: string;
 }
 
-export const deepseekExecutor: NodeExecutor<DeepseekData> = async ({ data, nodeId, context, step, publish }) => {
+export const deepseekExecutor: NodeExecutor<DeepseekData> = async ({ data, nodeId, context, userId,step, publish }) => {
     await publish(
         deepseekChannel().status({
             nodeId,
@@ -67,7 +67,8 @@ export const deepseekExecutor: NodeExecutor<DeepseekData> = async ({ data, nodeI
     const credential= await step.run("get-credential" , ()=> {
         return prisma.credential.findUnique({
             where: {
-                id:data.credentialId
+                id:data.credentialId,
+                userId
             }
         })
     });
