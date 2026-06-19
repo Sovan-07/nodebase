@@ -113,13 +113,13 @@ export const deepseekExecutor: NodeExecutor<DeepseekData> = async ({ data, nodeI
                 text,
             }
         }
-    } catch {
+    } catch(e) {
         await publish(
             deepseekChannel().status({
                 nodeId,
                 status: "error",
             })
         )
-        return context;
+        throw e;
     }
 }

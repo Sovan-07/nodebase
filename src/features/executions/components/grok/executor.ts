@@ -111,13 +111,13 @@ export const grokExecutor: NodeExecutor<GrokData> = async ({ data, nodeId, userI
                 text,
             }
         }
-    } catch {
+    } catch (e){
         await publish(
             grokChannel().status({
                 nodeId,
                 status: "error",
             })
         )
-        return context;
+        throw e;
     }
 }

@@ -109,13 +109,13 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({ data, nodeId, c
                  text,
             }
         }
-    }catch {
+    }catch(e) {
         await publish(
             geminiChannel().status({
                 nodeId,
                 status: "error",
             })
         ) 
-        return context;
+        throw e
     }
 }

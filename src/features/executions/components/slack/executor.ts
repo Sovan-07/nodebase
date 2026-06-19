@@ -85,13 +85,13 @@ export const slackExecutor: NodeExecutor<SlackData> = async ({ data, nodeId, con
         )
         return result
 
-    } catch {
+    } catch(e) {
         await publish(
             slackChannel().status({
                 nodeId,
                 status: "error",
             })
         )
-        return context;
+        throw e;
     }
 }

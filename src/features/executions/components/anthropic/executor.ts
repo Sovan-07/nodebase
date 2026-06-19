@@ -111,13 +111,13 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({ data, nod
                 text,
             }
         }
-    } catch {
+    } catch(e) {
         await publish(
             anthropicChannel().status({
                 nodeId,
                 status: "error",
             })
         )
-        return context;
+        throw e;
     }
 }

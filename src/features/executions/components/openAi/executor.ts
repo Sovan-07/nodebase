@@ -112,13 +112,13 @@ export const openAiExecutor: NodeExecutor<OpenAiData> = async ({ data, nodeId, c
                 text,
             }
         }
-    } catch {
+    } catch(e) {
         await publish(
             openAiChannel().status({
                 nodeId,
                 status: "error",
             })
         )
-        return context;
+        throw e;
     }
 }

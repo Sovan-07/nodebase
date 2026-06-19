@@ -88,13 +88,13 @@ export const discordExecutor: NodeExecutor<DiscordData> = async ({ data, nodeId,
         )
         return result
 
-    } catch {
+    } catch(e) {
         await publish(
             discordChannel().status({
                 nodeId,
                 status: "error",
             })
         )
-        return context;
+        throw e;
     }
 }
