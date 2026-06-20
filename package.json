@@ -25,7 +25,6 @@
     "@polar-sh/sdk": "^0.47.1",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
-    "@sentry/nextjs": "^10.53.1",
     "@tanstack/react-query": "^5.100.10",
     "@trpc/client": "^11.17.0",
     "@trpc/server": "^11.17.0",
