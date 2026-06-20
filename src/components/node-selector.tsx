@@ -46,14 +46,25 @@ const triggerNodes:NodeTypeOption[] = [
     },
 ];
 
-const executionNodes:NodeTypeOption[] = [
+const messagingNode:NodeTypeOption[] = [
+        
+
     {
-        type:NodeType.HTTP_REQUEST,
-        label:"HTTP Request",
-        description:"Makes an HTTP request",
-        icon:GlobeIcon,
+        type:NodeType.DISCORD,
+        label:"Discord",
+        description:"Use Discord",
+        icon:"/logos/discord.svg",
     },
 
+    {
+        type:NodeType.SLACK,
+        label:"Slack",
+        description:"Use Slack",
+        icon:"/logos/slack.svg",
+    },
+]
+
+const aiNodes:NodeTypeOption[] = [
     {
         type:NodeType.GEMINI,
         label:"Gemini",
@@ -85,18 +96,14 @@ const executionNodes:NodeTypeOption[] = [
         icon:"/logos/deepseek.svg",
     },
 
-    {
-        type:NodeType.DISCORD,
-        label:"Discord",
-        description:"Use Discord",
-        icon:"/logos/discord.svg",
-    },
+]
 
+const executionNodes:NodeTypeOption[] = [
     {
-        type:NodeType.SLACK,
-        label:"Slack",
-        description:"Use Slack",
-        icon:"/logos/slack.svg",
+        type:NodeType.HTTP_REQUEST,
+        label:"HTTP Request",
+        description:"Makes an HTTP request",
+        icon:GlobeIcon,
     },
 ]
 
@@ -192,8 +199,92 @@ export function NodeSelector({
                     })}
                 </div>
                 <Separator/>
+                <SheetHeader>
+                    <SheetTitle>
+                        What is request node ?
+                    </SheetTitle>
+                    <SheetDescription>
+                        A node used for HTTPS request to backend.
+                    </SheetDescription>
+                </SheetHeader>
                 <div>
                     {executionNodes.map((nodeType)=>{
+                        const Icon = nodeType.icon;
+                        return (
+                            <div 
+                                key={nodeType.type}
+                                className="w-full justify-start h-auto py-5 px-4 rounded-none
+                                cursor-pointer border-l-2 border-transparent hover:border-l-primary"    
+                                onClick={()=>handleNodeSelect(nodeType)}
+                            >
+                                <div className="flex items-center gap-6 w-full overflow-hidden">
+                                    {typeof Icon === "string"?(
+                                        <img src={Icon} alt={nodeType.label} className="size-5 object-contain rounded-sm"/>
+                                    ):(
+                                        <Icon className="size-5"/>
+                                    )}
+                                    <div className="flex flex-col items-start text-left">
+                                        <span className="font-medium text-sm">
+                                            {nodeType.label}
+                                        </span>
+                                        <span className="text-xs text-muted-foreground">
+                                            {nodeType.description}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+                <Separator/>
+                <SheetHeader>
+                    <SheetTitle>
+                        What is AI node ?
+                    </SheetTitle>
+                    <SheetDescription>
+                        Use different AI model to generate text.
+                    </SheetDescription>
+                </SheetHeader>
+                <div>
+                    {aiNodes.map((nodeType)=>{
+                        const Icon = nodeType.icon;
+                        return (
+                            <div 
+                                key={nodeType.type}
+                                className="w-full justify-start h-auto py-5 px-4 rounded-none
+                                cursor-pointer border-l-2 border-transparent hover:border-l-primary"    
+                                onClick={()=>handleNodeSelect(nodeType)}
+                            >
+                                <div className="flex items-center gap-6 w-full overflow-hidden">
+                                    {typeof Icon === "string"?(
+                                        <img src={Icon} alt={nodeType.label} className="size-5 object-contain rounded-sm"/>
+                                    ):(
+                                        <Icon className="size-5"/>
+                                    )}
+                                    <div className="flex flex-col items-start text-left">
+                                        <span className="font-medium text-sm">
+                                            {nodeType.label}
+                                        </span>
+                                        <span className="text-xs text-muted-foreground">
+                                            {nodeType.description}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+                <Separator/>
+                <SheetHeader>
+                    <SheetTitle>
+                        What is messaging node ?
+                    </SheetTitle>
+                    <SheetDescription>
+                        Use different Chating app to get notified.
+                    </SheetDescription>
+                </SheetHeader>
+                <div>
+                    {messagingNode.map((nodeType)=>{
                         const Icon = nodeType.icon;
                         return (
                             <div 

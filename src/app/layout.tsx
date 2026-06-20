@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Provider } from "jotai";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,18 +27,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <TooltipProvider>
-          <TRPCReactProvider>
-            <NuqsAdapter>
-              <Provider>
-                {children}
-                <Toaster />
-              </Provider>
-            </NuqsAdapter>
-          </TRPCReactProvider>
-        </TooltipProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            <TRPCReactProvider>
+              <NuqsAdapter>
+                <Provider>
+                  {children}
+                  <Toaster />
+                </Provider>
+              </NuqsAdapter>
+            </TRPCReactProvider>
+          </TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

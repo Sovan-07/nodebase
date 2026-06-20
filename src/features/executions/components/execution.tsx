@@ -116,7 +116,7 @@ export const ExecutionView = ({
                 <p className="text-sm font-medium text-red-900 mb-2">
                   Error
                 </p>
-                <p className="text-sm text-red-800 font-mono overflow-hidden">
+                <p className="text-sm text-red-800 font-mono overflow-auto">
                   {execution.error}
                 </p>
               </div>
